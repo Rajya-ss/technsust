@@ -1,0 +1,36 @@
+{
+    "note": "ALL numbers below are PLACEHOLDERS. Verify every value with an agriculture expert or a government source (e.g. ICAR, your local KVK) before using in the field.",
+
+    "tomato": {
+        "soil_moisture_low": 30,
+        "soil_moisture_low_note": "PLACEHOLDER – percent below which irrigation is urgent",
+
+        "soil_moisture_high": 65,
+        "soil_moisture_high_note": "PLACEHOLDER – percent above which no irrigation is needed",
+
+        "max_air_temp_c": 35,
+        "max_air_temp_c_note": "PLACEHOLDER – degrees C above which you should irrigate earlier than usual"
+    },
+
+    "potato": {
+        "soil_moisture_low": 25,
+        "soil_moisture_low_note": "PLACEHOLDER – percent below which irrigation is urgent",
+
+        "soil_moisture_high": 60,
+        "soil_moisture_high_note": "PLACEHOLDER – percent above which no irrigation is needed",
+
+        "max_air_temp_c": 30,
+        "max_air_temp_c_note": "PLACEHOLDER – degrees C above which you should irrigate earlier than usual"
+    },
+
+    "corn": {
+        "soil_moisture_low": 35,
+        "soil_moisture_low_note": "PLACEHOLDER – percent below which irrigation is urgent",
+
+        "soil_moisture_high": 70,
+        "soil_moisture_high_note": "PLACEHOLDER – percent above which no irrigation is needed",
+
+        "max_air_temp_c": 38,
+        "max_air_temp_c_note": "PLACEHOLDER – degrees C above which you should irrigate earlier than usual"
+    }
+}

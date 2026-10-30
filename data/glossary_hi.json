@@ -1,0 +1,26 @@
+{
+    "note": "IMPORTANT: Every Hindi term below is a machine-assisted translation. A native Hindi speaker with agriculture knowledge MUST verify each term before this file is used with real farmers.",
+
+    "crops": {
+        "tomato":  "टमाटर",
+        "potato":  "आलू",
+        "corn":    "मक्का"
+    },
+
+    "diseases": {
+        "Bacterial spot":                          "जीवाणु धब्बा",
+        "Early blight":                            "अगेती झुलसा",
+        "Late blight":                             "पछेती झुलसा",
+        "Leaf Mold":                               "पत्ती फफूंद",
+        "Septoria leaf spot":                      "सेप्टोरिया पत्ती धब्बा",
+        "Spider mites Two-spotted spider mite":    "दो धब्बे वाला मकड़ी कीट",
+        "Target Spot":                             "लक्ष्य धब्बा",
+        "Tomato Yellow Leaf Curl Virus":           "पीला पत्ती मोड़ विषाणु",
+        "Tomato mosaic virus":                     "मोज़ेक विषाणु",
+        "Cercospora leaf spot Gray leaf spot":     "सर्कोस्पोरा भूरा पत्ती धब्बा",
+        "Common rust":                             "सामान्य रतुआ",
+        "Northern Leaf Blight":                    "उत्तरी पत्ती झुलसा",
+        "Healthy":                                 "स्वस्थ",
+        "uncertain":                               "अनिश्चित"
+    }
+}

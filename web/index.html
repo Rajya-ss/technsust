@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart-Farm Assistant</title>
+<style>
+  /* System fonts only: no internet needed. Nirmala UI and Noto Sans Devanagari show Hindi. */
+  body {
+    font-family: "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    margin: 0 auto;
+    padding: 1rem;
+    max-width: 640px;
+    background: #f8f9fa;
+    color: #212529;
+    font-size: 1.05rem;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+  label { display: block; margin-top: 0.8rem; font-weight: 600; }
+  .card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  .card h2 { font-size: 1rem; margin: 0 0 0.4rem; color: #495057; }
+  .card p { margin: 0.25rem 0; }
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .badge.irrigate_now  { background: #d9534f; }
+  .badge.irrigate_soon { background: #e08e0b; }
+  .badge.wait          { background: #3d9b3d; }
+  .badge.skip_rain     { background: #2f8fb0; }
+  button, select, input[type="file"] {
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    margin-top: 0.4rem;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    background: #fff;
+  }
+  button { background: #2e7d32; color: #fff; border-color: #2e7d32; font-weight: 600; }
+  button:disabled { background: #ccc; border-color: #ccc; color: #666; cursor: not-allowed; }
+  .error-box {
+    background: #f8d7da; color: #842029; border: 1px solid #f5c2c7;
+    padding: 0.75rem; border-radius: 6px; margin-top: 0.75rem;
+  }
+  .wait-box {
+    background: #e7f1ff; color: #084298; border: 1px solid #b6d4fe;
+    padding: 0.75rem; border-radius: 6px; margin-top: 0.75rem;
+  }
+  .note-box { background: #fff3cd; border-color: #ffeeba; }
+  .notice {
+    background: #e2e3e5; color: #41464b; padding: 0.6rem;
+    border-radius: 6px; font-size: 0.95rem; margin-top: 1rem;
+  }
+  .preview-img {
+    max-width: 100%; max-height: 220px; margin-top: 0.5rem;
+    border: 1px solid #ddd; border-radius: 6px;
+  }
+  .advice { white-space: pre-wrap; }   /* keep the line breaks of the advice */
+  .small { font-size: 0.9rem; color: #6c757d; }
+</style>
+</head>
+
+<body>
+  <h1 data-i18n="title">Smart-Farm Assistant</h1>
+
+  <div class="card">
+    <label for="languageSelect" data-i18n="language">Language</label>
+    <select id="languageSelect">
+      <option value="English">English</option>
+      <option value="Hindi">हिन्दी (Hindi)</option>
+    </select>
+
+    <label for="cropSelect" data-i18n="crop">Crop</label>
+    <select id="cropSelect">
+      <option value="" data-i18n="chooseCrop">-- choose your crop --</option>
+      <option value="tomato" data-i18n="opt_tomato">Tomato</option>
+      <option value="potato" data-i18n="opt_potato">Potato</option>
+      <option value="corn" data-i18n="opt_corn">Corn</option>
+    </select>
+
+    <label for="scenarioSelect" data-i18n="scenario">Demo conditions</label>
+    <select id="scenarioSelect">
+      <option value="random" data-i18n="sc_random">Random</option>
+      <option value="dry_hot" data-i18n="sc_dry_hot">Dry and hot</option>
+      <option value="normal" data-i18n="sc_normal">Normal</option>
+      <option value="rainy" data-i18n="sc_rainy">Rainy</option>
+    </select>
+
+    <label for="photoInput" data-i18n="photo">Leaf photo</label>
+    <input type="file" id="photoInput" accept="image/*" capture="environment">
+    <img id="photoPreview" class="preview-img" alt="" hidden>
+
+    <button id="analyzeBtn" data-i18n="analyze" disabled>Analyze</button>
+
+    <div id="waitBox" class="wait-box" hidden></div>
+    <div id="errorBox" class="error-box" hidden></div>
+  </div>
+
+  <div id="resultArea"></div>
+
+  <div class="notice" data-i18n="disclaimer">
+    This is a helper, not a diagnosis. Show the leaf to a local agriculture officer or Krishi Vigyan Kendra.
+  </div>
+
+<script>
+      if (location.port !== "8000") {
+    document.title = "Open http://127.0.0.1:8000";
+    alert("Please open this app at http://127.0.0.1:8000 (not through Live Server).");
+  }
+  /* ------------------------------------------------------------
+     All words on the page live here, in English and Hindi.
+     NOTE: A native Hindi speaker must verify every Hindi label.
+     ------------------------------------------------------------ */
+  const UI_TEXT = {
+    English: {
+      title: "Smart-Farm Assistant",
+      language: "Language",
+      crop: "Crop",
+      chooseCrop: "-- choose your crop --",
+      opt_tomato: "Tomato", opt_potato: "Potato", opt_corn: "Corn",
+      scenario: "Demo conditions",
+      sc_random: "Random", sc_dry_hot: "Dry and hot", sc_normal: "Normal", sc_rainy: "Rainy",
+      photo: "Leaf photo",
+      analyze: "Analyze",
+      analysing: "Analysing... the first time can take up to a minute.",
+      errorGeneric: "Something went wrong. Please try again.",
+      errorTimeout: "The request took too long. Please try again.",
+      errorServer: "Could not reach the server. Is the app running?",
+      cropTitle: "Crop",
+      cropNames: { tomato: "Tomato", potato: "Potato", corn: "Corn" },
+      diseaseTitle: "Disease check",
+      diseaseUncertain: "Not certain",
+      diseaseHealthy: "No disease found",
+      diseasePossible: "Possible disease (not confirmed)",
+      irrigationTitle: "Irrigation",
+      actions: {
+        irrigate_now: "Irrigate now",
+        irrigate_soon: "Irrigate soon",
+        wait: "No irrigation needed",
+        skip_rain: "Skip, it rained"
+      },
+      sensorTitle: "Sensor values",
+      sensorDemo: "Demo values, not from a real sensor",
+      moisture: "Soil moisture", soilTemp: "Soil temperature", airTemp: "Air temperature",
+      humidity: "Humidity", rain: "Rain (last 24 hours)",
+      adviceTitle: "Advice",
+      cropMismatch: "The photo may show a different crop than the one you chose.",
+      disclaimer: "This is a helper, not a diagnosis. Show the leaf to a local agriculture officer or Krishi Vigyan Kendra."
+    },
+    Hindi: {
+      title: "स्मार्ट-फ़ार्म सहायक",
+      language: "भाषा",
+      crop: "फ़सल",
+      chooseCrop: "-- अपनी फ़सल चुनें --",
+      opt_tomato: "टमाटर", opt_potato: "आलू", opt_corn: "मक्का",
+      scenario: "डेमो स्थितियां",
+      sc_random: "कोई भी", sc_dry_hot: "सूखा और गर्म", sc_normal: "सामान्य", sc_rainy: "बारिश",
+      photo: "पत्ती की तस्वीर",
+      analyze: "विश्लेषण करें",
+      analysing: "विश्लेषण हो रहा है... पहली बार में एक मिनट तक लग सकता है।",
+      errorGeneric: "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+      errorTimeout: "बहुत देर लग गई। कृपया फिर से कोशिश करें।",
+      errorServer: "सर्वर से संपर्क नहीं हो सका। क्या ऐप चालू है?",
+      cropTitle: "फ़सल",
+      cropNames: { tomato: "टमाटर", potato: "आलू", corn: "मक्का" },
+      diseaseTitle: "रोग की जांच",
+      diseaseUncertain: "निश्चित नहीं",
+      diseaseHealthy: "कोई रोग नहीं मिला",
+      diseasePossible: "संभावित रोग (पुष्टि नहीं हुई)",
+      irrigationTitle: "सिंचाई",
+      actions: {
+        irrigate_now: "अभी सिंचाई करें",
+        irrigate_soon: "जल्दी सिंचाई करें",
+        wait: "सिंचाई की ज़रूरत नहीं",
+        skip_rain: "बारिश हुई, सिंचाई न करें"
+      },
+      sensorTitle: "सेंसर के मान",
+      sensorDemo: "डेमो मान, असली सेंसर से नहीं",
+      moisture: "मिट्टी की नमी", soilTemp: "मिट्टी का तापमान", airTemp: "हवा का तापमान",
+      humidity: "आर्द्रता", rain: "बारिश (पिछले 24 घंटे)",
+      adviceTitle: "सलाह",
+      cropMismatch: "फोटो में आपकी चुनी फ़सल से अलग फ़सल दिख सकती है।",
+      disclaimer: "यह एक सहायक है, निदान नहीं। पत्ती को स्थानीय कृषि अधिकारी या कृषि विज्ञान केंद्र को दिखाएँ।"
+    }
+  };
+
+  /* ---------------- Page elements ---------------- */
+  const languageSelect = document.getElementById("languageSelect");
+  const cropSelect = document.getElementById("cropSelect");
+  const scenarioSelect = document.getElementById("scenarioSelect");
+  const photoInput = document.getElementById("photoInput");
+  const photoPreview = document.getElementById("photoPreview");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const waitBox = document.getElementById("waitBox");
+  const errorBox = document.getElementById("errorBox");
+  const resultArea = document.getElementById("resultArea");
+
+  let busy = false;            // true while a request is running
+  let previewUrl = null;       // so we can free the old preview
+
+  /* ---------------- Language ---------------- */
+  function setLanguage(lang) {
+    const txt = UI_TEXT[lang];
+    document.documentElement.lang = (lang === "Hindi") ? "hi" : "en";
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      el.textContent = txt[el.dataset.i18n];
+    });
+  }
+
+  languageSelect.addEventListener("change", function () {
+    setLanguage(languageSelect.value);
+    resultArea.textContent = "";      // an old result would be in the other language
+    errorBox.hidden = true;
+  });
+
+  /* ---------------- Button state ---------------- */
+  function updateButtonState() {
+    const ready = cropSelect.value !== "" && photoInput.files.length > 0;
+    analyzeBtn.disabled = busy || !ready;
+  }
+
+  function setBusy(value) {
+    busy = value;
+    languageSelect.disabled = value;
+    updateButtonState();
+  }
+
+  cropSelect.addEventListener("change", updateButtonState);
+
+  photoInput.addEventListener("change", function () {
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+    const file = photoInput.files[0];
+    if (file) {
+      previewUrl = URL.createObjectURL(file);
+      photoPreview.src = previewUrl;
+      photoPreview.hidden = false;
+    } else {
+      photoPreview.hidden = true;
+    }
+    updateButtonState();
+  });
+
+  /* ---------------- Helpers to build result cards ----------------
+     Everything is written with textContent, so text from the server
+     can never be run as code. */
+  function addCard(title, lines, extraClass) {
+    const card = document.createElement("div");
+    card.className = "card" + (extraClass ? " " + extraClass : "");
+    if (title) {
+      const h = document.createElement("h2");
+      h.textContent = title;
+      card.appendChild(h);
+    }
+    lines.forEach(function (line) {
+      const p = document.createElement("p");
+      p.textContent = line;
+      card.appendChild(p);
+    });
+    resultArea.appendChild(card);
+    return card;
+  }
+
+  function fixed1(value) {
+    const n = Number(value);
+    return isNaN(n) ? String(value) : n.toFixed(1);
+  }
+
+  /* ---------------- Show the answer ---------------- */
+  function renderResult(data) {
+    const lang = (data.language === "Hindi") ? "Hindi" : "English";
+    const txt = UI_TEXT[lang];
+    resultArea.textContent = "";
+
+    // a) crop
+    addCard(txt.cropTitle, [txt.cropNames[data.crop] || data.crop]);
+
+    // b) disease (never shows a confidence number)
+    const disease = String(data.disease_result.disease).toLowerCase().trim();
+    let diseaseLine;
+    if (disease === "uncertain") {
+      diseaseLine = txt.diseaseUncertain;
+    } else if (disease === "healthy") {
+      diseaseLine = txt.diseaseHealthy;
+    } else {
+      diseaseLine = txt.diseasePossible + ": " + data.disease_result.disease;
+    }
+    addCard(txt.diseaseTitle, [diseaseLine]);
+
+    // c) irrigation
+    const action = data.irrigation.action;
+    const irrigationCard = addCard(txt.irrigationTitle, []);
+    const badge = document.createElement("span");
+    badge.className = "badge " + action;
+    badge.textContent = txt.actions[action] || action;
+    irrigationCard.appendChild(badge);
+    // The server writes the reason in English only, so we show it only in English.
+    if (lang === "English" && data.irrigation.reason) {
+      const p = document.createElement("p");
+      p.textContent = data.irrigation.reason;
+      irrigationCard.appendChild(p);
+    }
+
+    // d) sensor values
+    const r = data.reading;
+    const sensorCard = addCard(txt.sensorTitle, [
+      txt.moisture + ": " + fixed1(r.soil_moisture) + " %",
+      txt.soilTemp + ": " + fixed1(r.soil_temp_c) + " °C",
+      txt.airTemp + ": " + fixed1(r.air_temp_c) + " °C",
+      txt.humidity + ": " + fixed1(r.humidity) + " %",
+      txt.rain + ": " + fixed1(r.rain_last_24h_mm) + " mm"
+    ]);
+    const small = document.createElement("p");
+    small.className = "small";
+    small.textContent = txt.sensorDemo;
+    sensorCard.appendChild(small);
+
+    // e) advice (line breaks kept by CSS)
+    const adviceCard = addCard(txt.adviceTitle, []);
+    const adviceText = document.createElement("div");
+    adviceText.className = "advice";
+    adviceText.textContent = data.advice;
+    adviceCard.appendChild(adviceText);
+
+    // f) crop mismatch note
+    if (data.crop_mismatch) {
+      addCard("", [txt.cropMismatch], "note-box");
+    }
+  }
+
+  /* ---------------- Send the photo to the server ---------------- */
+  analyzeBtn.addEventListener("click", async function () {
+    const lang = languageSelect.value;
+    const txt = UI_TEXT[lang];
+
+    resultArea.textContent = "";
+    errorBox.hidden = true;
+    waitBox.textContent = txt.analysing;
+    waitBox.hidden = false;
+    setBusy(true);
+
+    const form = new FormData();
+    form.append("photo", photoInput.files[0]);
+    form.append("language", lang);
+    form.append("crop", cropSelect.value);
+    form.append("scenario", scenarioSelect.value);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(function () { controller.abort(); }, 300000);   // 300 seconds
+
+    try {
+      const response = await fetch("/analyze", {
+        method: "POST",
+        body: form,
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        let message = txt.errorGeneric;
+        try {
+          const err = await response.json();
+          if (err && err.error) { message = err.error; }
+        } catch (parseError) { /* keep the generic message */ }
+        showError(message);
+        return;
+      }
+
+      const data = await response.json();
+      renderResult(data);
+
+    } catch (e) {
+      showError(e.name === "AbortError" ? txt.errorTimeout : txt.errorServer);
+    } finally {
+      clearTimeout(timeoutId);
+      waitBox.hidden = true;
+      setBusy(false);
+    }
+  });
+
+  function showError(message) {
+    errorBox.textContent = message;
+    errorBox.hidden = false;
+  }
+
+  setLanguage("English");
+</script>
+</body>
+</html>

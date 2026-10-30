@@ -1,0 +1,129 @@
+{
+  "note": "Every entry must be copied or paraphrased from a named source and reviewed by an agriculture expert. No chemical names and no doses.",
+
+  "tomato|bacterial spot": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|early blight": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|late blight": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|leaf mold": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|septoria leaf spot": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|spider mites two-spotted spider mite": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|target spot": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|tomato yellow leaf curl virus": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "tomato|tomato mosaic virus": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "potato|early blight": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "potato|late blight": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "corn|cercospora leaf spot gray leaf spot": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "corn|common rust": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  },
+
+  "corn|northern leaf blight": {
+    "what_it_is": "",
+    "what_to_do": [],
+    "prevention": [],
+    "what_to_do_hi": [],
+    "sources": [],
+    "status": "empty"
+  }
+}

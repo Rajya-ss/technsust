@@ -1,0 +1,9 @@
+filename,true_label,predicted_label,confidence,result
+potato_early_blight_1.jpg,Potato - Early Blight,Tomato - Early blight,0.9838,WRONG
+tomato_bacterial_spot_1.jpg,Tomato - Bacterial Spot,Tomato - Early blight,0.714,WRONG
+tomato_early_blight_1.jpg,Tomato - Early Blight,Tomato - Early blight,0.9968,CORRECT
+tomato_healthy_1.jpg,Tomato - Healthy,Tomato - Early blight,0.9958,WRONG
+tomato_late_blight_1.jpg,Tomato - Late Blight,Tomato - uncertain,0.6371,WRONG
+tomato_leaf_mold_1.jpg,Tomato - Leaf Mold,Tomato - Early blight,0.83,WRONG
+tomato_septoria_leaf_spot_1.jpg,Tomato - Septoria Leaf Spot,Tomato - Early blight,0.948,WRONG
+tomato_target_spot_1.jpg,Tomato - Target Spot,Tomato - Early blight,0.9897,WRONG
